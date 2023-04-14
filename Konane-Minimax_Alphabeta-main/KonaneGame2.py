@@ -122,6 +122,15 @@ class KonaneGame2:
     def evaluate(self, board, color, terminal_value=0):
 
         value = 0
+
+        for i in range (0,board.size):
+            for j in range (0,board.size):
+                if board.game_board[i][j].piece == color and not(i==0 and j==0) and not(i==0 and j==board.size-1) and not(i==board.size-1 and j==0)and not (i==board.size-1 and j==board.size-1):
+                    if board.game_board[i-1][j].piece == self.opponent(color) and board.game_board[i+1][j].piece == self.opponent(color):
+                        value += 20
+                    if board.game_board[i][j-1].piece == self.opponent(color) and board.game_board[i][j+1].piece == self.opponent(color):
+                        value += 20
+
         valid_moves_color = self.generate_all_possible_moves(board, color)
         valid_moves_opponent = self.generate_all_possible_moves(board, self.opponent(color))
         value += (20 * self.checkCorners(board, color))
@@ -137,5 +146,9 @@ class KonaneGame2:
         if board.game_board[0][0].piece == color and (board.game_board[1][0].piece != Tile.P_NONE or board.game_board[0][1].piece != Tile.P_NONE): point += 1
         if board.game_board[-1][-1].piece == color and (board.game_board[-1][-2].piece != Tile.P_NONE or board.game_board[-2][-1].piece != Tile.P_NONE): point += 1
         if board.game_board[0][-1].piece == color and (board.game_board[0][-2].piece != Tile.P_NONE or board.game_board[1][-1].piece != Tile.P_NONE): point += 1
-        if board.game_board[-1][0].piece == color and (board.game_board[-2][0].piece != Tile.P_NONE or board.game_board[-1][-1].piece != Tile.P_NONE): point += 1
+        if board.game_board[-1][0].piece == color and (board.game_board[-2][0].piece != Tile.P_NONE or board.game_board[-1][1].piece != Tile.P_NONE): point += 1
+        if board.game_board[0][0].piece == self.opponent(color) and (board.game_board[1][0].piece == Tile.P_NONE or board.game_board[0][1].piece == Tile.P_NONE): point += 1
+        if board.game_board[-1][-1].piece == self.opponent(color) and (board.game_board[-1][-2].piece == Tile.P_NONE or board.game_board[-2][-1].piece == Tile.P_NONE): point += 1
+        if board.game_board[0][-1].piece == self.opponent(color) and (board.game_board[0][-2].piece == Tile.P_NONE or board.game_board[1][-1].piece == Tile.P_NONE): point += 1
+        if board.game_board[-1][0].piece == self.opponent(color) and (board.game_board[-2][0].piece == Tile.P_NONE or board.game_board[-1][1].piece == Tile.P_NONE): point += 1
         return point
