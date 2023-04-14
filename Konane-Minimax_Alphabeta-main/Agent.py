@@ -13,7 +13,6 @@ class Agent:
 
     def do_min_max(self, current_board):
         move, value = self.max(current_board, self.color, 0, self.MIN_VALUE, self.MAX_VALUE)
- 
         return move
     
 
@@ -33,7 +32,7 @@ class Agent:
             if (value > best_move_value):
                 best_move_value = value
                 best_move = move
-            if beta < value:
+            if beta <= value:
                 return best_move, best_move_value
                 # implement alpha-beta here
                 
@@ -56,8 +55,8 @@ class Agent:
             if (value < best_move_value):
                 best_move_value = value
                 best_move = move
-                if alpha > value:
-                    return best_move, best_move_value
+            if alpha >= value:
+                return best_move, best_move_value
                 # implement alpha-beta here
 
         return best_move, best_move_value

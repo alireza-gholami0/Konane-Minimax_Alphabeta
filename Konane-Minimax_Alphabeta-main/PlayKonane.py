@@ -5,7 +5,7 @@ from Tile import Tile
 
 class PlayKonane:
 
-    def __init__(self, init_board, game_manager ,agent1, agent2 = None):
+    def __init__(self, init_board, game_manager , agent1, agent2 = None):
         self.init_board = init_board
         self.game_manager = game_manager
         self.agent1 = agent1

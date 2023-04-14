@@ -1,7 +1,7 @@
 from Tile import Tile
 
 
-class KonaneGame:
+class KonaneGame2:
     def __init__(self):
         NotImplemented
 
@@ -124,8 +124,18 @@ class KonaneGame:
         value = 0
         valid_moves_color = self.generate_all_possible_moves(board, color)
         valid_moves_opponent = self.generate_all_possible_moves(board, self.opponent(color))
+        value += (20 * self.checkCorners(board, color))
+        # value -= (20 * self.checkCorners(board, self.opponent(color)))
+        value += (30 * (board.count_symbol(color) - board.count_symbol(self.opponent(color))))
         value += (10 * len(valid_moves_color))
         value -= (10 * len(valid_moves_opponent))
-
         value += terminal_value
         return value
+
+    def checkCorners(self, board, color):
+        point = 0
+        if board.game_board[0][0].piece == color and (board.game_board[1][0].piece != Tile.P_NONE or board.game_board[0][1].piece != Tile.P_NONE): point += 1
+        if board.game_board[-1][-1].piece == color and (board.game_board[-1][-2].piece != Tile.P_NONE or board.game_board[-2][-1].piece != Tile.P_NONE): point += 1
+        if board.game_board[0][-1].piece == color and (board.game_board[0][-2].piece != Tile.P_NONE or board.game_board[1][-1].piece != Tile.P_NONE): point += 1
+        if board.game_board[-1][0].piece == color and (board.game_board[-2][0].piece != Tile.P_NONE or board.game_board[-1][-1].piece != Tile.P_NONE): point += 1
+        return point
