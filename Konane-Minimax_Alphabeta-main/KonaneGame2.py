@@ -123,11 +123,15 @@ class KonaneGame2:
         value = 0
         valid_moves_color = self.generate_all_possible_moves(board, color)
         valid_moves_opponent = self.generate_all_possible_moves(board, self.opponent(color))
+        value += (4 * self.moving(board, color))
+        value -= (4 * self.aloneCounter(board, color))
+        value += (4 * self.aloneCounter(board, self.opponent(color)))
         value += (2 * self.betweenCounter(board, color))
-        value += (5 * self.checkSides(board, color))
-        value -= (3 * self.checkSides(board, self.opponent(color)))
+        value -= (2 * self.betweenCounter(board, self.opponent(color)))
+        value += (2 * self.checkSides(board, color))
+        value -= (2 * self.checkSides(board, self.opponent(color)))
         value += (5 * self.checkCorners(board, color))
-        value -= (3 * self.checkCorners(board, self.opponent(color)))
+        value -= (5 * self.checkCorners(board, self.opponent(color)))
         value += (5 * (board.count_symbol(color) - board.count_symbol(self.opponent(color))))
         value += (10 * len(valid_moves_color))
         value -= (10 * len(valid_moves_opponent))
@@ -148,30 +152,41 @@ class KonaneGame2:
         return len(allowed_move)
 
     def checkSides(self, board, color):
-        allowed_move = []
-        for i in range(0, board.size):
+        point = 0
+        for i in range(2, board.size-1):
             if board.game_board[i][0].piece == color:
-                allowed_move += self.get_moves_at_tile(board, board.game_board[i][0], color)
+                if len(self.get_moves_at_tile(board, board.game_board[i][0], color)) != 0:
+                    point += 1
             if board.game_board[0][i].piece == color:
-                allowed_move += self.get_moves_at_tile(board, board.game_board[0][i], color)
-        return len(allowed_move)
+                if len(self.get_moves_at_tile(board, board.game_board[0][i], color)) != 0:
+                    point += 1
+        return point
 
     def betweenCounter(self, board, color):
         between = 0
-        for i in range(0, board.size):
-            for j in range(0, board.size):
-                if board.game_board[i][j].piece == color:
-                    if i != 0 and i != board.size-1:
-                        if board.game_board[i-1][j].piece == self.opponent(color) and board.game_board[i+1][j].piece == self.opponent(color)\
-                                and len(self.get_moves_at_tile(board,board.game_board[i][j],color)) != 0:
+        for i in range(1, board.size-2):
+            for j in range(1, board.size-2):
+                if board.contains(i,j,color):
+                    if board.contains(i-1,j,self.opponent(color)) and board.contains(i+1,j,self.opponent(color)):
                             between += 1
-                    if j!=0 and j!=board.size-1:
-                        if board.game_board[i][j-1].piece == self.opponent(color) and board.game_board[i][j+1].piece == self.opponent(color)\
-                                and len(self.get_moves_at_tile(board,board.game_board[i][j],color)) != 0:
+                    if board.contains(i, j-1, self.opponent(color)) and board.contains(i, j+1,self.opponent(color)):
                             between += 1
         return between
 
+    def aloneCounter(self, board, color):
+        alone = 0
+        for i in range(1, board.size-2):
+            for j in range(1, board.size-2):
+                if board.contains(i, j, color):
+                    if board.contains(i+1, j, 0) and board.contains(i, j+1, 0) and board.contains(i-1, j, 0) and board.contains(i, j-1, 0):
+                        alone += 1
+        return alone
 
-        
-
-
+    def moving(self, board, color):
+        count = 0
+        for i in range(0, board.size):
+            for j in range(0, board.size):
+                if board.contains(i, j, color):
+                    if len(self.get_moves_at_tile(board,board.game_board[i][j],color)) >= 3:
+                        count += 1
+        return count
