@@ -124,6 +124,8 @@ class KonaneGame2:
         valid_moves_color = self.generate_all_possible_moves(board, color)
         valid_moves_opponent = self.generate_all_possible_moves(board, self.opponent(color))
         value += (2 * self.betweenCounter(board, color))
+        value += (5 * self.checkSides(board, color))
+        value -= (3 * self.checkSides(board, self.opponent(color)))
         value += (5 * self.checkCorners(board, color))
         value -= (3 * self.checkCorners(board, self.opponent(color)))
         value += (5 * (board.count_symbol(color) - board.count_symbol(self.opponent(color))))
@@ -145,6 +147,15 @@ class KonaneGame2:
 
         return len(allowed_move)
 
+    def checkSides(self, board, color):
+        allowed_move = []
+        for i in range(0, board.size):
+            if board.game_board[i][0].piece == color:
+                allowed_move += self.get_moves_at_tile(board, board.game_board[i][0], color)
+            if board.game_board[0][i].piece == color:
+                allowed_move += self.get_moves_at_tile(board, board.game_board[0][i], color)
+        return len(allowed_move)
+
     def betweenCounter(self, board, color):
         between = 0
         for i in range(0, board.size):
@@ -159,5 +170,8 @@ class KonaneGame2:
                                 and len(self.get_moves_at_tile(board,board.game_board[i][j],color)) != 0:
                             between += 1
         return between
+
+
+        
 
 
