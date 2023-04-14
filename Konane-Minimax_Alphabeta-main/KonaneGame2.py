@@ -121,22 +121,9 @@ class KonaneGame2:
 
     def evaluate(self, board, color, terminal_value=0):
         value = 0
-        between = 0
-        for i in range(0, board.size):
-            for j in range(0, board.size):
-                if board.game_board[i][j].piece == color:
-                    if i != 0 and i != board.size-1:
-                        if board.game_board[i-1][j].piece == self.opponent(color) and board.game_board[i+1][j].piece == self.opponent(color)\
-                                and len(self.get_moves_at_tile(board,board.game_board[i][j],color)) != 0:
-                            between += 1
-                    if j!=0 and j!=board.size-1:
-                        if board.game_board[i][j-1].piece == self.opponent(color) and board.game_board[i][j+1].piece == self.opponent(color)\
-                                and len(self.get_moves_at_tile(board,board.game_board[i][j],color)) != 0:
-                            between += 1
-
         valid_moves_color = self.generate_all_possible_moves(board, color)
         valid_moves_opponent = self.generate_all_possible_moves(board, self.opponent(color))
-        value += (2 * between)
+        value += (2 * self.betweenCounter(board, color))
         value += (5 * self.checkCorners(board, color))
         value -= (3 * self.checkCorners(board, self.opponent(color)))
         value += (5 * (board.count_symbol(color) - board.count_symbol(self.opponent(color))))
@@ -157,4 +144,20 @@ class KonaneGame2:
             allowed_move += self.get_moves_at_tile(board, board.game_board[-1][0], color)
 
         return len(allowed_move)
+
+    def betweenCounter(self, board, color):
+        between = 0
+        for i in range(0, board.size):
+            for j in range(0, board.size):
+                if board.game_board[i][j].piece == color:
+                    if i != 0 and i != board.size-1:
+                        if board.game_board[i-1][j].piece == self.opponent(color) and board.game_board[i+1][j].piece == self.opponent(color)\
+                                and len(self.get_moves_at_tile(board,board.game_board[i][j],color)) != 0:
+                            between += 1
+                    if j!=0 and j!=board.size-1:
+                        if board.game_board[i][j-1].piece == self.opponent(color) and board.game_board[i][j+1].piece == self.opponent(color)\
+                                and len(self.get_moves_at_tile(board,board.game_board[i][j],color)) != 0:
+                            between += 1
+        return between
+
 
