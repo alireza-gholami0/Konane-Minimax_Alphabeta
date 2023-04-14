@@ -93,7 +93,7 @@ class KonaneGame2:
     def get_moves_at_tile(self, board, tile, player):
         moves = self.generate_all_possible_moves(board, player)
         valid_moves_at_tile = []
-        print(moves)
+        # print(moves)
         for move in moves:
             if move[0] == tile.row and move[1] == tile.col:
                 valid_tile = board.game_board[move[2]][move[3]]
@@ -123,22 +123,21 @@ class KonaneGame2:
 
         value = 0
 
-        for i in range (0,board.size-1):
-            for j in range (0,board.size-1):
-                if board.game_board[i][j].piece == color :
-
-                    if i!=0 and board.game_board[i-1][j].piece == self.opponent(color) :
-                        if i!=board.size-1 and board.game_board[i+1][j].piece == self.opponent(color) :
-                            value += 20
-                    if j!=0 and board.game_board[i][j-1].piece == self.opponent(color):
-                        if j!=board.size-1 and board.game_board[i][j+1].piece == self.opponent(color):
-                            value += 20
+        # for i in range (0,board.size-1):
+        #     for j in range (0,board.size-1):
+        #         if board.game_board[i][j].piece == color :
+        #
+        #             if i!=0 and board.game_board[i-1][j].piece == self.opponent(color) :
+        #                 if i!=board.size-1 and board.game_board[i+1][j].piece == self.opponent(color) :
+        #                     value += 20
+        #             if j!=0 and board.game_board[i][j-1].piece == self.opponent(color):
+        #                 if j!=board.size-1 and board.game_board[i][j+1].piece == self.opponent(color):
+        #                     value += 20
 
         valid_moves_color = self.generate_all_possible_moves(board, color)
         valid_moves_opponent = self.generate_all_possible_moves(board, self.opponent(color))
-        value += (20 * self.checkCorners(board, color))
-        # value -= (20 * self.checkCorners(board, self.opponent(color)))
-        value += (30 * (board.count_symbol(color) - board.count_symbol(self.opponent(color))))
+        value += (5 * self.checkCorners(board, color))
+        value += (5 * (board.count_symbol(color) - board.count_symbol(self.opponent(color))))
         value += (10 * len(valid_moves_color))
         value -= (10 * len(valid_moves_opponent))
         value += terminal_value
@@ -146,35 +145,27 @@ class KonaneGame2:
 
     def checkCorners(self, board, color):
         point = 0
-        allowed_move=[]
-        opponent_move=[]
+        allowed_move = []
+        opponent_move = []
         if board.game_board[0][0].piece == color :
-            allowed_move += self.check(0,0,0,2,1,self.opponent(color))
-            allowed_move += self.check(0,0,2,0,1,self.opponent(color))
+            allowed_move += self.get_moves_at_tile(board,board.game_board[0][0],color)
         if board.game_board[-1][-1].piece == color :
-            allowed_move += self.check(-1,-1,-1,-3,1,self.opponent(color))
-            allowed_move += self.check(-1,-1,-3,-1,1,self.opponent(color))
+            allowed_move += self.get_moves_at_tile(board,board.game_board[-1][-1],color)
         if board.game_board[0][-1].piece == color :
-            allowed_move += self.check(0,-1,0,-3,1,self.opponent(color))
-            allowed_move += self.check(0,-1,2,-1,1,self.opponent(color))
+            allowed_move += self.get_moves_at_tile(board,board.game_board[0][-1],color)
         if board.game_board[-1][0].piece == color :
-            allowed_move += self.check(-1,0,-1,2,1,self.opponent(color))
-            allowed_move += self.check(-1,0,-3,0,1,self.opponent(color))
+            allowed_move += self.get_moves_at_tile(board,board.game_board[-1][0],color)
 
 
         if board.game_board[0][0].piece == self.opponent(color) :
-            opponent_move += self.check(0,0,0,2,1,color)
-            opponent_move += self.check(0,0,2,0,1,color)
+            opponent_move += self.get_moves_at_tile(board,board.game_board[0][0],self.opponent(color))
         if board.game_board[-1][-1].piece== self.opponent(color) :
-            opponent_move += self.check(-1,-1,-1,-3,1,color)
-            opponent_move += self.check(-1,-1,-3,-1,1,color)
+            opponent_move += self.get_moves_at_tile(board, board.game_board[-1][-1], self.opponent(color))
         if board.game_board[0][-1].piece == self.opponent(color) :
-            opponent_move += self.check(0,-1,0,-3,1,color)
-            opponent_move += self.check(0,-1,2,-1,1,color)
+            opponent_move += self.get_moves_at_tile(board, board.game_board[0][-1], self.opponent(color))
         if board.game_board[-1][0].piece == self.opponent(color) :
-            opponent_move += self.check(-1,0,-1,2,1,color)
-            opponent_move += self.check(-1,0,-3,0,1,color)
-        
+            opponent_move += self.get_moves_at_tile(board, board.game_board[-1][0], self.opponent(color))
         point = len(allowed_move) - len(opponent_move)
+        print(point)
         return point
 
